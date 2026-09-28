@@ -5,6 +5,7 @@ entity datapath is
     port (
         clk        : in  STD_LOGIC;
         reset      : in  STD_LOGIC;
+        en         : in  STD_LOGIC;
         loadDis    : in  STD_LOGIC;
         selDis     : in  STD_LOGIC_VECTOR(1 downto 0);
         loadL      : in  STD_LOGIC;
@@ -21,6 +22,7 @@ architecture structurel of datapath is
         port (
             clk    : in  STD_LOGIC;
             reset  : in  STD_LOGIC;
+            en     : in  STD_LOGIC;
             load   : in  STD_LOGIC;
             D      : in  STD_LOGIC_VECTOR(7 downto 0);
             Q      : out STD_LOGIC_VECTOR(7 downto 0)
@@ -67,8 +69,10 @@ architecture structurel of datapath is
 
 begin
 
-    decale_L <= LMASK_val(6 downto 0) & '0';
-    decale_R <= '0' & RMASK_val(7 downto 1);
+    -- Decalages en rotation : le bit qui sort d'un cote rentre de l'autre,
+    -- sinon le masque devient 00000000 apres 8 pas et la lumiere disparait.
+    decale_L <= LMASK_val(6 downto 0) & LMASK_val(7);   -- LMASK << 1
+    decale_R <= RMASK_val(0) & RMASK_val(7 downto 1);   -- RMASK >> 1
 
     U_OR : or8bits port map (
         entreeA => LMASK_val,
@@ -86,6 +90,7 @@ begin
     U_REG_L : registre8 port map (
         clk   => clk,
         reset => reset,
+        en    => en,
         load  => loadL,
         D     => mux_L_out,
         Q     => LMASK_val
@@ -101,6 +106,7 @@ begin
     U_REG_R : registre8 port map (
         clk   => clk,
         reset => reset,
+        en    => en,
         load  => loadR,
         D     => mux_R_out,
         Q     => RMASK_val
@@ -118,6 +124,7 @@ begin
     U_REG_DIS : registre8 port map (
         clk   => clk,
         reset => reset,
+        en    => en,
         load  => loadDis,
         D     => mux_Dis_out,
         Q     => DISPLAY_out
