@@ -62,7 +62,23 @@ begin
         disp := x"00"; lmask := x"01"; rmask := x"80";
         verifier("S0 : initialisation");
 
-        -- S1 pendant 9 pas : les deux masques tournent (rotation verifiee)
+        -- 1) S2 (LEFT seul) pendant 3 pas : seul LMASK avance
+        for k in 1 to 3 loop
+            pas('1', '1', '1', '0', '0', "01");
+            disp := lmask;
+            lmask := lmask(6 downto 0) & lmask(7);
+            verifier("S2 pas " & integer'image(k));
+        end loop;
+
+        -- 2) S3 (RIGHT seul) pendant 3 pas : seul RMASK avance
+        for k in 1 to 3 loop
+            pas('1', '0', '0', '1', '1', "10");
+            disp := rmask;
+            rmask := rmask(0) & rmask(7 downto 1);
+            verifier("S3 pas " & integer'image(k));
+        end loop;
+
+        -- 3) S1 (LEFT et RIGHT) pendant 9 pas : les deux masques tournent
         for k in 1 to 9 loop
             pas('1', '1', '1', '1', '1', "11");
             disp := lmask or rmask;
@@ -74,22 +90,6 @@ begin
         -- en = 0 : rien ne change
         pas('0', '1', '1', '1', '1', "11");
         verifier("en=0 : affichage maintenu");
-
-        -- S2 pendant 3 pas : seul LMASK avance
-        for k in 1 to 3 loop
-            pas('1', '1', '1', '0', '0', "01");
-            disp := lmask;
-            lmask := lmask(6 downto 0) & lmask(7);
-            verifier("S2 pas " & integer'image(k));
-        end loop;
-
-        -- S3 pendant 3 pas : seul RMASK avance
-        for k in 1 to 3 loop
-            pas('1', '0', '0', '1', '1', "10");
-            disp := rmask;
-            rmask := rmask(0) & rmask(7 downto 1);
-            verifier("S3 pas " & integer'image(k));
-        end loop;
 
         -- S4 : affichage vide, masques figes
         pas('1', '0', '0', '0', '0', "00");

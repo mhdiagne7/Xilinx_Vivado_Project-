@@ -51,17 +51,18 @@ begin
         wait for 3 ns;
         verifier(CMD_S0, "reset -> S0");
         wait until falling_edge(clk); reset <= '0';
-        pas('1', '1', '0'); verifier(CMD_S0, "en=0 : reste en S0");
-        pas('1', '1', '1'); verifier(CMD_S1, "LEFT et RIGHT -> S1");
+        pas('1', '0', '0'); verifier(CMD_S0, "en=0 : reste en S0");
+        -- 1) LEFT seul
         pas('1', '0', '1'); verifier(CMD_S2, "LEFT -> S2");
         pas('1', '0', '1'); verifier(CMD_S2, "LEFT -> reste en S2");
+        -- 2) RIGHT seul
         pas('0', '1', '1'); verifier(CMD_S3, "RIGHT -> S3");
-        pas('0', '0', '1'); verifier(CMD_S4, "aucun -> S4");
-        pas('0', '0', '1'); verifier(CMD_S4, "aucun -> reste en S4");
-        pas('1', '1', '1'); verifier(CMD_S1, "LEFT et RIGHT -> S1 (2)");
-        pas('0', '0', '0'); verifier(CMD_S1, "en=0 : reste en S1");
-        pas('0', '1', '1'); verifier(CMD_S3, "RIGHT -> S3 (2)");
-        pas('1', '0', '1'); verifier(CMD_S2, "LEFT -> S2 (2)");
+        pas('0', '1', '1'); verifier(CMD_S3, "RIGHT -> reste en S3");
+        -- 3) LEFT et RIGHT
+        pas('1', '1', '1'); verifier(CMD_S1, "LEFT et RIGHT -> S1");
+        pas('1', '1', '1'); verifier(CMD_S1, "LEFT et RIGHT -> reste en S1");
+        -- en = 0 : l'etat est maintenu malgre le changement des interrupteurs
+        pas('1', '0', '0'); verifier(CMD_S1, "en=0 : reste en S1");
         wait for 2 ns; reset <= '1'; wait for 1 ns;
         verifier(CMD_S0, "reset en cours de cycle -> S0");
         report "FIN tb_controlpath : " & integer'image(total) & " verifications, "

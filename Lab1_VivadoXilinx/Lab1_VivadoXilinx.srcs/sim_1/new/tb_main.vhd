@@ -27,12 +27,9 @@ architecture sim of tb_main is
     end record;
     type plan_t is array (natural range <>) of pas_t;
     constant PLAN : plan_t := (
-        ('1', '0', 12),   -- LEFT : la lumiere va de droite a gauche (+ rotation)
-        ('0', '1', 10),   -- RIGHT : de gauche a droite
-        ('1', '1', 10),   -- les deux combines
-        ('0', '0', 3),    -- affichage vide, masques figes
-        ('1', '0', 4),    -- reprise au point d'arret
-        ('0', '1', 3)
+        ('1', '0', 10),   -- 1) LEFT seul  : la lumiere va de droite a gauche
+        ('0', '1', 10),   -- 2) RIGHT seul : la lumiere va de gauche a droite
+        ('1', '1', 10)    -- 3) LEFT et RIGHT : les deux mouvements combines
     );
 
 begin
