@@ -1,0 +1,19 @@
+# Fichiers Vivado générés
+build/
+.Xil/
+*.jou
+*.log
+*.str
+*.wdb
+*.vcd
+*.rpt
+*.dcp
+*.bit
+*.bin
+*.ltx
+*.zip
+# Système et éditeurs
+.DS_Store
+Thumbs.db
+*.swp
+*~
